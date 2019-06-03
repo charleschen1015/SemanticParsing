@@ -1,0 +1,10 @@
+### Statements about metadata
+### See README for guidelines.
+
+KEY: 00
+
+
+#(medium) "[this/that] [looks like/seems to be/is] [his/her] [mini_order] [day/week/month]."
+#     --> Order(x, [$4:mini_order_logic], Sequence(d, d.type==[$5:Day/Week/Month])) \wedge x==[$5:Day/Week/Month](CurrentDate)
+
+

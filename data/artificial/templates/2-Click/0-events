@@ -1,0 +1,8 @@
+### Clicks on events.
+### See README for guidelines.
+
+KEY: 20
+
+
+#(easy) ""
+#       --> Click(e) \wedge e.type==[any_event_logic] \wedge e.time==\mbox{[clocktime]}

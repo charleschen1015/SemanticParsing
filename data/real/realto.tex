@@ -1,0 +1,1811 @@
+\documentclass[11pt]{article}
+
+\marginparwidth 0.5in 
+\oddsidemargin 0.25in 
+\evensidemargin 0.25in 
+\marginparsep 0.25in
+\topmargin 0.25in 
+\textwidth 6in \textheight 8 in
+
+\newcounter{CQ}
+\newcounter{CS}
+\newcounter{CClick}
+
+\newcommand{\key}[1]{\textcolor{lightgray}{#1}}
+
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+\begin{document}
+\date{}
+\title{Real Data}
+\maketitle
+
+%===
+
+\setcounter{CQ}{1}
+\setcounter{CS}{1}
+\setcounter{CClick}{1}
+
+\begin{itemize}
+	\item 
+	\textbf{Q\theCQ} \key{(1100)}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Is this the first day of the patient? }
+	\begin{multline*}
+	Answer(CurrentDate==x) \wedge Order(x, 1, Sequence(d, d.type==Date)) \\
+	\end{multline*}
+	
+	
+	\item 
+	\textbf{Q\theCQ} \key{(1101)}:  \addtocounter{CQ}{1}
+	\textcolor{blue}{ What day is it? }
+	\begin{multline*}
+	Answer(Day(CurrentDate)) \\
+	\end{multline*}
+	
+	
+	\item 
+	\textbf{Q\theCQ} \key{(11111)}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ How high is the basal rate before midnight? }
+	\begin{multline*}
+	Answer(e.value) \wedge Before(e.time, MidNight()) \wedge e.type==BasalRate \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{S\theCS} \key{(01)}: \addtocounter{CS}{1}
+	\textcolor{blue}{ I see that the blood glucose level is a little high in the midnight. }
+	\begin{multline*}
+	High(e.value) \wedge e.type==BGL \wedge e.time==MidNight()\\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{(111111)}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ what happened before that? }
+	\begin{multline*}
+	Answer(e) \wedge Before(e.time, e(-1).time) \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{(20)} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Bolus \wedge e.time == \mbox{22:12pm} \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{(20)} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == FingerSticks \wedge e.time == \mbox{22:31pm}\\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{(11101)}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Is there any heart rate reported this day? }
+	\begin{multline*}
+    Answer(Any(d.type==HeartRate \wedge d.date==CurrentDate)) \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{(1101)}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ So what is the first day they also have heart rate reported? }
+	\begin{multline*}
+	Answer(e.date) \wedge Order(e, 1, Sequence(d, d.type==HeartRate)) \\
+	\end{multline*}
+	
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{(11101)}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Did he eat during the night? }
+	\begin{multline*}
+	Answer(Any(d.type==Meal \wedge d.time==Night)) \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{(20)} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Meal \wedge e.time == \mbox{1:07pm} \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{(111112)}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ How high was the heart rate when he ate? }
+	\begin{multline*}
+	Answer(e.value) \wedge Highest(e.value) \wedge Around(e.time, e(-1).time) \\
+	\wedge e.type==HeartRate \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{(11111)}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ How low did he get during that night? }
+	\begin{multline*}
+	Answer(e.value) \wedge Lowest(e.value) \wedge e.type==BGL \wedge e.time==Night() \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{(111011)}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ So the blood glucose you showed me, it is a hypoglycemia? }
+	\begin{multline*}
+	Answer(Hypo(e(-1)))\\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{(111112)}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ What did he do when he went hypo? }
+	\begin{multline*}
+	Answer(e) \wedge Around(e.time, e(-1).time) \wedge e.type==DiscreteType \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{(20)} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == HypoAction \wedge e.time == \mbox{19:49pm}\\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{(20)} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == FingerSticks \wedge e.time == \mbox{19:58pm} \\
+	\end{multline*}
+	
+	\item
+	\textbf{Click\theCClick} \key{(20)} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Bolus \wedge e.time == \mbox{20:00pm}  \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{(111011)}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Is that just one bolus? }
+	\begin{multline*}
+	Answer(Count(e, e.type==Bolus \wedge Around(e.time, e(-1).time))==1) \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{S\theCS} \key{(01)}: \addtocounter{CS}{1}
+	\textcolor{blue}{ GSR went really high in the morning. }
+	\begin{multline*}
+	High(e.value) \wedge e.type==GSR \wedge e.time==Morning() \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{(111111)}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ what did he do? }
+	\begin{multline*}
+	Answer(e) \wedge Around(e.time, e(-1).time) \wedge e.type==DiscreteType \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{(20)} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Meal \wedge e.time == \mbox{7:35am}  \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{(20)} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Bolus \wedge e.time == \mbox{7:41am}  \\
+	\end{multline*}
+	
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{(10)}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Go next. }
+	\begin{multline*}
+	DoSetDate(CurrentDate + 1) \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{(1100)}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Is this patient 101? }
+	\begin{multline*}
+	Answer(CurrentPatient == 101) \\
+	\end{multline*}
+	
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{(10)}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Can you go back to the previous day? }
+	\begin{multline*}
+	DoSetDate(CurrentDate - 1) \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{S\theCS} \key{(01)}: \addtocounter{CS}{1}
+	\textcolor{blue}{ In the morning, he goes low.}
+	\begin{multline*}
+	Hypo(e) \wedge e.time==Morning() \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{S\theCS} \key{(01)}: \addtocounter{CS}{1}
+	\textcolor{blue}{ In the late afternoon, then again, he goes low.}
+	\begin{multline*}
+	Hypo(e) \wedge e.time==Afternoon() \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{(11100)}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Is there another day he goes low in the morning and evening? }
+	\begin{multline*}
+	Answer( Any(Hypo(d_1) \wedge Hypo(d_2) \wedge x != CurrentDate \\
+	\wedge x.type==Date \wedge d_1.time==Morning(x) \wedge d_2.time==Afternoon(x)) ) \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{S\theCS} \key{(01)}: \addtocounter{CS}{1}
+	\textcolor{blue}{ I can see GSR is pretty high in the morning. }
+	\begin{multline*}
+	Highest(e.value) \wedge e.type==GSR \wedge e.time==Morning()\\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{(111111)}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ what did he eat? }
+	\begin{multline*}
+	Answer(e.food) \wedge Around(e.time, e(-1).time) \\
+	\end{multline*}
+
+%===
+
+	\item
+	\textbf{S\theCS} \key{()}: \addtocounter{CS}{1}
+	\textcolor{blue}{ I see she went low in the middle of the day. }
+	\begin{multline*}
+	Low(e.value) \wedge e.type==BGL \wedge e.time==MidDay() \\
+	\end{multline*} 
+    
+	\item
+	\textbf{S\theCS} \key{()}: \addtocounter{CS}{1}
+	\textcolor{blue}{ It looks like there's a hypo. }
+	\begin{multline*}  
+    Hypo(e(-1))
+	\end{multline*} 
+    
+    
+    \item
+    \textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+    \textcolor{blue}{ I want to know how low she is? }
+    \begin{multline*}
+    Answer(e(-1).value) \\
+    \end{multline*}
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{()}: \addtocounter{CClick}{1}
+	
+	\begin{multline*}
+	Click(e) \wedge e.type == FingerStick \wedge e.time == \mbox{11:53am} \\
+	\end{multline*}
+	
+	\item
+	\textbf{S\theCS} \key{()}: \addtocounter{CS}{1}
+	\textcolor{blue}{ Well the Finger Stick is 56. }
+	\begin{multline*}
+	e.type==Fingerstick \wedge e.value==56 \\
+	\end{multline*}
+    
+    \item
+    \textbf{S\theCS} \key{()}: \addtocounter{CS}{1}
+    \textcolor{blue}{ It looks like she suspended her pump. }
+    \begin{multline*}
+    Suspended(e) \wedge Around(e.time, e(-1).time)\\
+    \end{multline*}
+    
+    \item
+    \textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+    \textcolor{blue}{ What did she say about it? }
+    \begin{multline*}
+    Answer(e) \wedge e.type == Misc \wedge Around(e.time, e(-1).time) \\
+    \end{multline*}
+	
+	\item
+	\textbf{Click\theCClick} \key{()}: \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == HypoEvent \wedge e.time == \mbox{11:45am} \\
+	\end{multline*}
+	
+    
+    \item
+    \textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+    \textcolor{blue}{ So what does she do about it? }
+    \begin{multline*}
+    Answer(e) \wedge e.type == HypoAction \wedge Around(e.time, e(-1).time)  \\
+    \end{multline*}
+	
+
+	
+	\item
+	\textbf{Click\theCClick} \key{()}: \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == HypoAction \wedge e.time == \mbox{11:46am} \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ It looks like she ate something? }
+	\begin{multline*}
+	Answer(e) \wedge e.type == Meal \wedge Around(e.time, e(-1).time)  \\
+	\end{multline*}
+	
+	\item
+	\textbf{Click\theCClick} \key{()}: \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Meal \wedge e.time == \mbox{11:55pm} \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{S\theCS} \key{()}: \addtocounter{CS}{1}
+	\textcolor{blue}{look how she goes up like this. }
+	\begin{multline*}
+    Behavior(e.value, Up) \wedge Around(e.time, e(-1).time) \wedge e.type==BGL \\ 
+	\end{multline*}
+	
+	\item
+	\textbf{S\theCS} \key{()}: \addtocounter{CS}{1}
+	\textcolor{blue}{ 30 carbs, that would be an overcorrection. }
+	\begin{multline*}
+	e.carbs==30 \wedge e==e_2(-1) \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ How high does she get? }
+	\begin{multline*}
+    Answer(e.value) \wedge Highest(e.value) \wedge Around(e.time, e(-1).time) \wedge e.type==BGL \\
+	\end{multline*}
+	
+	\item
+	\textbf{Click\theCClick} \key{()}: \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == FingerStick \wedge e.time == \mbox{14:20pm} \\
+	\end{multline*}
+	
+	\item
+	\textbf{S\theCS} \key{()}: \addtocounter{CS}{1}
+	\textcolor{blue}{ It looks like she has a miscellaneous comment. }
+	\begin{multline*}
+	e.type == Misc \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{()}: \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Misc \wedge e.time == \mbox{15:40pm} \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Did she bolus or anything? }
+	\begin{multline*}
+	Answer(e) \wedge Around(e.time, e(-1).time) \wedge e.type == Bolus  \\
+	\end{multline*}
+	
+	\item
+	\textbf{Click\theCClick} \key{()}: \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Bolus \wedge e.time == \mbox{17:24pm} \\
+	\end{multline*}
+	
+	\item
+	\textbf{S\theCS} \key{()}: \addtocounter{CS}{1}
+	\textcolor{blue}{ Not until 3:40 in the afternoon, and she's already coming down. }
+	\begin{multline*}
+	Behavior(e.value, Down) \wedge Around(e.time, 3:40pm) \wedge e.type==BGL \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ What did she come down to? }
+	\begin{multline*}
+    Answer(e.value) \wedge Lowest(e.value) \wedge Around(e.time, e(-1).time) \wedge e.type==BGL \\
+	\end{multline*}
+	
+	\item
+	\textbf{Click\theCClick} \key{()}: \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == FingerStick \wedge e.time == \mbox{17:19pm} \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ What is she doing then? }
+	\begin{multline*}
+    Answer(e) \wedge Around(e.time, e(-1).time) \wedge e.type == DiscreteType \\ 
+	\end{multline*}
+	
+
+	\item
+	\textbf{Click\theCClick} \key{()}: \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == HypoAction \wedge e.time == \mbox{20:47pm} \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Okay, so why would she have dropped right there? }
+	\begin{multline*}
+	Answer(e) \wedge Before(e.time, e(-1).time) \wedge e.type == DiscreteType \\
+	\end{multline*}
+	
+	\item
+	\textbf{Click\theCClick} \key{()}: \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Exercise \wedge e.time == \mbox{20:04pm} \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{S\theCS} \key{()}: \addtocounter{CS}{1}
+	\textcolor{blue}{ I also see she's pretty high in the morning here, right when she wakes up. }
+	\begin{multline*}
+	High(e.value) \wedge Around(e.time, e_1.time) \wedge e.type==BGL	\wedge e_1.type == Wakeup \\
+	\wedge e.time==Morning()\\
+	\end{multline*}
+	
+
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ This not being winter, we can turn off skin and air temp. }
+	\begin{multline*}
+	DoToggle(Off, SkinTemperature) \wedge DoToggle(Off, AirTemperature)  \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Let's go to the next day. }
+	\begin{multline*}
+	DoSetDate(CurrentDate + 1) \\
+	\end{multline*}
+	
+	\item
+	\textbf{S\theCS} \key{()}: \addtocounter{CS}{1}
+	\textcolor{blue}{ She exercises here, but doesn't go quite so low. }
+	\begin{multline*}
+	Cond( After(e.time, e_1.time) \wedge e.type==BGL ==> !Low(e.value)) \wedge e_1.type == Exercise \\
+	\end{multline*}
+	
+    
+	\item
+	\textbf{S\theCS} \key{()}: \addtocounter{CS}{1}
+	\textcolor{blue}{ We can see what the finger stick is. }
+	\begin{multline*}
+	e.type == FingerSticks \wedge Around(e.time, e_2(-1).time)\\
+	\end{multline*}
+	
+	\item
+	\textbf{Click\theCClick} \key{()}: \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == FingerSticks \wedge e.time == \mbox{20:40pm} \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Let's go to the previous day. }
+	\begin{multline*}
+	DoSetDate(CurrentDate - 1) \\
+	\end{multline*}
+	
+
+	\item
+	\textbf{S\theCS} \key{()}: \addtocounter{CS}{1}
+	\textcolor{blue}{ Now we see two hypo events on this day. }
+	\begin{multline*}
+	Count(e, e.type==Hypo \wedge e.date == CurrentDate) == 2 \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Is there any recent day in which the same thing happens? }
+	\begin{multline*}
+	Answer(Any(d, Before(d, CurrentDate) \wedge Count(d_1, d_1.type==HypoEvent \\
+	\wedge d_1.date==d)==2 \wedge d.type==Date) \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Is there any other day close to this day which there are two hypo events? }
+	\begin{multline*}
+	Answer(Any(d, Around(d, CurrentDate) \wedge Count(d_1, d_1.type==HypoEvent \\
+	\wedge d_1.date==d)==2 \wedge d.type==Date) \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Can we also go to the day before this one? }
+	\begin{multline*}
+	DoSetDate(CurrentDate - 1) \\
+	\end{multline*}
+	
+
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Can we look at another day before this one? }
+	\begin{multline*}
+	DoSetDate(CurrentDate - 1) \\
+	\end{multline*}
+	
+
+	\item
+	\textbf{S\theCS} \key{()}: \addtocounter{CS}{1}
+	\textcolor{blue}{ This one is not after exercise, but during exercise. }
+	\begin{multline*}
+	Around(e.time, e_1.time) \wedge e.type==Hypo \wedge e_1.type==Exercise \\
+	\end{multline*}
+	
+	\item
+	\textbf{S\theCS} \key{()}: \addtocounter{CS}{1}
+	\textcolor{blue}{ She suspended her pump. }
+	\begin{multline*}
+	Suspended(e) \wedge Around(e.time, e(-1).time) \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Well what did she say about that? }
+	\begin{multline*}
+	Answer(e) \wedge e.type == Misc \wedge Around(e.time, e(-1).time)\\
+	\end{multline*}
+	
+	\item
+	\textbf{Click\theCClick} \key{()}: \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Misc \wedge e.time == \mbox{20:01pm} \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ What else did she say? }
+	\begin{multline*}
+	Answer(e) \wedge e.type == Misc \\
+	\end{multline*}
+	
+	\item
+	\textbf{Click\theCClick} \key{()}: \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Misc \wedge e.time == \mbox{20:26pm} \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ What kind of exercise is she doing? }
+	\begin{multline*}
+	Answer(e.kind) \wedge e.type == Exercise \\
+	\end{multline*}
+	
+	\item
+	\textbf{Click\theCClick} \key{()}: \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Exercise \wedge e.time == \mbox{19:18pm} \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ What did she eat to take care of the hypo event? }
+	\begin{multline*}
+	Answer(e.food) \wedge Around(e.time, e_1.time) \wedge e_1.type==Hypo \\
+	\end{multline*}
+	
+	\item
+	\textbf{Click\theCClick} \key{()}: \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == HypoEvent \wedge e.time == \mbox{19:54pm} \\
+	\end{multline*}
+	
+	\item
+	\textbf{Click\theCClick} \key{()}: \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == HypoAction \wedge e.time == \mbox{19:54pm} \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Does she usually just take sugar? }
+	\begin{multline*}
+	Answer(Cond(e.type==HypoAction ==> e.food==Sugar))  \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ How often does she use sugar as a hypo action? }
+	\begin{multline*}
+	Answer(Count(e, e.food==sugar \wedge e.type==HypoAction)) \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ When she does other types of exercise, does she still go low, or is it just with elliptical exercise? }
+	\begin{multline*}
+	Answer(Any(Hypo(e) \wedge After(e.time, e_1.time) \wedge e_1.type = Exercise \wedge e_1.kind != Elliptical)) \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ How intense is her elliptical exercise? }
+	\begin{multline*}
+	Answer(e.intensity) \wedge e.type = Exercise \wedge e.kind == Elliptical \\
+	\end{multline*}
+	
+	\item
+	\textbf{Click\theCClick} \key{()}: \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Exercise \wedge e.time == \mbox{19:56pm} \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Show me exercises where intensity is higher than 5. }
+	\begin{multline*}
+	e.type == Exercise \wedge e.intensity > 5 \wedge e.date==AnyDate  \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ What is she eating right before her exercise? }
+	\begin{multline*}
+	Answer(e.food) \wedge e.type == Meal \wedge RightBefore(e.time, e(-1).time)  \\
+	\end{multline*}
+	
+	\item
+	\textbf{Click\theCClick} \key{()}: \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Meal \wedge e.time == \mbox{19:20pm} \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ How many meals did she have this day? }
+	\begin{multline*}
+	Answer(Count(e, e.type==Meal \wedge e.date==CurrentDate))  \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Did she eat more than average, in terms of carbs? }
+	\begin{multline*}
+	Answer(Sum(e.carbs, e.date==CurrentDate) > Mean(e.carbs))   \\
+	\end{multline*}
+	
+	\item
+	\textbf{Click\theCClick} \key{()}: \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Meal \wedge e.time == \mbox{18:06pm} \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{S\theCS} \key{()}: \addtocounter{CS}{1}
+	\textcolor{blue}{ She bolused even though she already had a hypo event. }
+	\begin{multline*}
+	e.type==Bolus \wedge After(e.time, e_1.time) \wedge  e_1.type == Hypo \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{S\theCS} \key{()}: \addtocounter{CS}{1}
+	\textcolor{blue}{ She must have been eating something.}
+	\begin{multline*}
+	e.type == Meal \wedge Around(e.time, e(-1).time)   \\
+	\end{multline*}
+	
+	\item
+	\textbf{Click\theCClick} \key{()}: \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Meal \wedge e.time == \mbox{18:08pm}  \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Well how much insulin did she take in that bolus? }
+	\begin{multline*}
+	Answer(e.value) \wedge e.type == Bolus \\
+	\end{multline*}
+	
+	\item
+	\textbf{Click\theCClick} \key{()}: \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Bolus \wedge e.time == \mbox{18:08pm}  \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{(10)}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Let's move ahead to April 4th. }
+	\begin{multline*}
+	DoSetDate(April4th) \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Is she getting better about going low after exercise?}
+	\begin{multline*}
+	Answer( Cond(After(e.time, e_1.time) \wedge e.type==BGL \wedge e_1.type==Exercise ==> !Hypo(e)) )  \\
+	\end{multline*}
+	
+    
+	\item
+	\textbf{S\theCS} \key{()}: \addtocounter{CS}{1}
+	\textcolor{blue}{ Here she has a low before exercise. }
+	\begin{multline*}
+    Hypo(e) \wedge Before(e.time, e_1(-1).time) \\
+	\end{multline*}
+	
+    
+	\item
+	\textbf{S\theCS} \key{()}: \addtocounter{CS}{1}
+	\textcolor{blue}{ She drops during exercise. }
+	\begin{multline*}
+    Behavior(e.value, Down) \wedge Around(e.time, e_1(-1).time) \wedge e.type == BGL  \\ 
+	\end{multline*}
+    
+    
+    \item
+	\textbf{S\theCS} \key{()}: \addtocounter{CS}{1}
+	\textcolor{blue}{ She is not into the hypo range. }
+	\begin{multline*}
+	!Hypo(e(-1)) \\
+	\end{multline*}
+    
+    
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Let's see what her finger stick is? }
+	\begin{multline*}
+	Answer(e) \wedge Around(e.time, e(-1).time) \wedge e.type==FingerSticks \\
+	\end{multline*}
+	
+	\item
+	\textbf{Click\theCClick} \key{()}: \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == FingerStick \wedge e.time == \mbox{20:53pm}  \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{()}: \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == BGL \wedge e.time == \mbox{20:53pm}  \\
+	\end{multline*}
+	
+	\item
+	\textbf{S\theCS} \key{()}: \addtocounter{CS}{1}
+	\textcolor{blue}{ She ate before exercise. }
+	\begin{multline*}
+	e.type==Meal \wedge Before(e.time, e_1.time) \wedge e_1.type==Exercise \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ what did she have? }
+	\begin{multline*}
+	Answer(e(-1).food)\\
+	\end{multline*}
+	
+	\item
+	\textbf{Click\theCClick} \key{()}: \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Meal \wedge e.time == \mbox{18:13pm}  \\
+	\end{multline*}
+	
+	\item
+	\textbf{S\theCS} \key{()}: \addtocounter{CS}{1}
+	\textcolor{blue}{ But she bolused with that meal. }
+	\begin{multline*}
+	e.type == Bolus \wedge Around(e.time, e(-1).time) \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ How much did she bolus? }
+	\begin{multline*}
+	Answer(e(-1).value) \\
+	\end{multline*}
+	
+	\item
+	\textbf{Click\theCClick} \key{()}: \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Bolus \wedge e.time == \mbox{18:18pm}  \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ What intensity was that exercise? }
+	\begin{multline*}
+	Answer(e.intensity) \wedge e.type == Exercise \\
+	\end{multline*}
+	
+	\item
+	\textbf{Click\theCClick} \key{()}: \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Exercise \wedge e.time == \mbox{19:15pm}  \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Does she ever say she's not having exercise intensity 5? }
+	\begin{multline*}
+	Answer(Any(e.type==Exercise \wedge e.intensity != 5 )) \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{()}: \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == InfusionSet \wedge e.time == \mbox{7:27am}  \\
+	\end{multline*}
+	
+	\item
+	\textbf{S\theCS} \key{()}: \addtocounter{CS}{1}
+	\textcolor{blue}{ It looks like she changed her infusion set today. }
+	\begin{multline*}
+	e.type==InfusionSet \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ When was the last time she changed it? }
+	\begin{multline*}
+	Answer(e.date) \\
+	\hspace{1em}\wedge Order(e, -1, Sequence(e_1, e_1.type==InfusionSet \wedge e_1.time==Before(CurrentDay))) \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Is she running a little high all day long then? }
+	\begin{multline*}
+	Answer(Cond(e.type==BGL \wedge e.date==CurrentDate ==> High(e.value))) \\
+	\end{multline*}
+	
+	\item
+	\textbf{Click\theCClick} \key{()}: \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Illness \wedge e.time == \mbox{13:25pm}  \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Let's look at the next day. }
+	\begin{multline*}
+	DoSetDate(CurrentDate + 1) \\
+	\end{multline*}
+	
+
+	\item
+	\textbf{S\theCS} \key{()}: \addtocounter{CS}{1}
+	\textcolor{blue}{ It looks like she woke up in the night because she was feeling low. }
+	\begin{multline*}
+	e.type==WakeUp \wedge e.time==Night() \wedge Around(e.time, e_1.time) \wedge Low(e_1)  \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Does she take sugar, even at night? }
+	\begin{multline*}
+	Answer(Any(e.food==Sugar \wedge e.time==Night()))  \\
+	\end{multline*}
+	
+	\item
+	\textbf{Click\theCClick} \key{()}: \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Hypo \wedge e.time == \mbox{2:14am}  \\
+	\end{multline*}
+	
+	\item
+	\textbf{Click\theCClick} \key{()}: \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == HypoAction \wedge e.time == \mbox{2:14am}  \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Let's see what kind of exercise that is, where the steps are high? }
+	\begin{multline*}
+	Answer(e.kind) \wedge e.type==Exercise \wedge Around(e.time, e_1.time) \wedge \\
+	e_1.type==StepCount \wedge High(e_1.value)   \\
+	\end{multline*}
+	
+	\item
+	\textbf{Click\theCClick} \key{()}: \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Exercise \wedge e.time == \mbox{18:30pm}  \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ So does she only go low after elliptical and go high after walking? }
+	\begin{multline*}
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ What is the intensity of walking? }
+	\begin{multline*}
+	Answer(e.intensity) \wedge e.type == Exercise \wedge e.kind == Walking \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Has the heart rate come down since then? }
+	\begin{multline*}
+    Behavior(e.value, Down) \wedge Around(e.time, CurrentDate) \wedge e.type == HeartRate \\ 
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ I'm just gonna go to the next day. }
+	\begin{multline*}
+	DoSetDate(CurrentDate + 1) \\
+	\end{multline*}
+	
+
+	\item
+	\textbf{S\theCS} \key{()}: \addtocounter{CS}{1}
+	\textcolor{blue}{ She has a lot of steps during exercise. }
+	\begin{multline*}
+	High(e.value) \wedge Around(e.time, e_1.time) \wedge e.type == StepCount \wedge e_1.type==Exercise  \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ I wonder what kind of exercise she's doing this day. }
+	\begin{multline*}
+	Answer(e.kind) \wedge e.type == Exercise \\
+	\end{multline*}
+	
+	\item
+	\textbf{Click\theCClick} \key{()}: \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Exercise \wedge e.time == \mbox{19:03pm}  \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ What does she eat before this exercise? }
+	\begin{multline*}
+	Answer(e.food) \wedge Before(e.time, e(-1).time) \\
+	\end{multline*}
+	
+%===
+
+	\item
+	\textbf{Q\theCQ} \key{(10)}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Do the toggle so we can see step counts. }
+	\begin{multline*}
+	DoToggle(On, StepCount) \\
+	\end{multline*}
+	
+
+	\item
+	\textbf{Click\theCClick} \key{(20)} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Exercise \wedge e.time == \mbox{9:31am}  \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{(20)} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Misc \wedge e.time == \mbox{9:50am}  \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{(11111)}: \addtocounter{CQ}{1}
+	\textcolor{blue}{What was she doing mid afternoon when her heart rate went up? }
+	\begin{multline*}
+    Answer(e) \wedge Behavior(e_1.value, Up) \wedge Around(e.time, e_1.time) \wedge \\ 
+    e_1.type==HeartRate \wedge e_1.time==MidAfternoon() \\
+	\end{multline*}
+	
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{(20)} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == BGL \wedge e.time == \mbox{16:23pm}  \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{S\theCS} \key{(01)}: \addtocounter{CS}{1}
+	\textcolor{blue}{ If you look around 10 o'clock at night, sweat goes up. }
+	\begin{multline*}
+	Behavior(e.value, Up) \wedge Around(e.time, 10pm) \wedge e.type==GSR \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{(111111)}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ What happened then? }
+	\begin{multline*}
+	Answer(e) \wedge Around(e.time, e(-1).time) \wedge e.type==DiscreteType \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{(10)}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Let's go next day. }
+	\begin{multline*}
+	DoSetDate(CurrentDate + 1) \\
+	\end{multline*}
+	
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{(20)} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Exercise \wedge e.time == \mbox{9:41am}  \\
+	\end{multline*}
+	
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{(10)}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Click on the second exercise. }
+	\begin{multline*}
+	DoClick(e) \wedge  Order(e, 2, Sequence(d, d.type==Exercise \wedge d.date==CurrentDate))  \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{(20)} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Exercise \wedge e.time == \mbox{12:43pm}  \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{(20)} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == BGL \wedge e.time == \mbox{13:44pm}  \\
+	\end{multline*}
+	
+	
+	
+	\item
+	\textbf{S\theCS} \key{(01)}: \addtocounter{CS}{1}
+	\textcolor{blue}{ If you look, she woke up and took 2 boluses. }
+	\begin{multline*}
+	Count(e, e.type==Bolus \wedge After(e.time, e_1.time) \wedge e_1.type==WakeUp)==2 \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{(111111)}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ What time was that? }
+	\begin{multline*}
+	Answer(e(-1).time) \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{(10)}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Let's go back to the day before. }
+	\begin{multline*}
+	DoSetDate(CurrentDate - 1) \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{(20)} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Bolus \wedge e.time == \mbox{20:03pm}  \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{(111111)}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ What did she eat? }
+	\begin{multline*}
+    Answer(e.food) \wedge Around(e.time, e(-1).time) \\ 
+	\end{multline*}
+	
+	\item
+	\textbf{Click\theCClick} \key{(20)} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Meal \wedge e.time == \mbox{20:27pm} \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{(10)}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Toggle on air temperature. }
+	\begin{multline*}
+	DoToggle(On, AirTemperature) \\
+	\end{multline*}
+
+	\item
+	\textbf{Q\theCQ} \key{(10)}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Toggle on skin temperature. }	
+	\begin{multline*}
+	DoToggle(On, SkinTemperature) \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{(10)}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ So, go to Thursday. }
+	\begin{multline*}
+	DoSetDate(Thursday) \\
+	\end{multline*}
+	
+	
+	
+	\item
+	\textbf{S\theCS} \key{(01)}: \addtocounter{CS}{1}
+	\textcolor{blue}{ So it woke her up before she had symptoms. }
+	\begin{multline*}
+	e.type==Wakeup \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{(111111)}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Did she do anything? }
+	\begin{multline*}
+	Answer(e) \wedge Around(e.time, e(-1).time) \wedge e.type==DiscreteType \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{S\theCS} \key{()}: \addtocounter{CS}{1}
+	\textcolor{blue}{ She's high at night that night. }
+	\begin{multline*}
+	High(e.value) \wedge e.type==BGL \wedge e.time==Night()\\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ What did she eat? }
+	\begin{multline*}
+	Answer(e.food) \wedge Before(e.time, e(-1).time) \\
+	\end{multline*}
+	
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{()} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == BGL \wedge e.time == \mbox{5:11am} \\
+	\end{multline*}
+	
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Look at her bolus at 6pm. }
+	\begin{multline*}
+	DoClick(e) \wedge e.type == Bolus \wedge Around(e.time, \mbox{6:00pm}) \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{()} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Bolus \wedge e.time == \mbox{17:05pm} \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Look at her bolus at 2. }
+	\begin{multline*}
+	DoClick(e) \wedge e.type == Bolus \wedge Around(e.time, \mbox{2:00pm}) \\
+	\end{multline*}
+	
+	\item
+	\textbf{Click\theCClick} \key{()} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Bolus \wedge e.time == \mbox{13:13pm} \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Okay, see what she ate. }
+	\begin{multline*}
+	 Answer(e.food) \wedge Around(e.time, e(-1).time) \wedge e.type == Meal  \\
+	\end{multline*}
+
+	
+	\item
+	\textbf{Click\theCClick} \key{()} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Meal \wedge e.time == \mbox{13:39pm} \\
+	\end{multline*}
+
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Let's just go to the next day. }
+	\begin{multline*}
+	DoSetDate(CurrentDate + 1) \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{()} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == FingerSticks \wedge e.time == \mbox{11:51am} \\
+	\end{multline*}
+	
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Any activity (exercise) in the afternoon? }
+	\begin{multline*}
+	Answer(Any(d.type==Exercise \wedge d.time==Afternoon()))  \\
+	\end{multline*}
+	
+	
+    \item
+	\textbf{S\theCS} \key{()}: \addtocounter{CS}{1}
+	\textcolor{blue}{ She suspended the pump at about 12:30, 1 o'clock. }
+	\begin{multline*}
+	Suspended(e) \wedge (Around(e.time, 12:30pm) \vee Around(e.time, 1pm)) \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ What did she eat there? }
+	\begin{multline*}
+	Answer(e.food) \wedge Around(e.time, e(-1).time) \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{()} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Meal \wedge e.time == \mbox{13:04pm}  \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ What did she eat at supper that night? }
+	\begin{multline*}
+	Answer(e.food) \wedge e.type == Meal \wedge e.time==Night() \\
+	\end{multline*}
+	
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{()} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Meal \wedge e.time == \mbox{12:22pm} \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Now the 28th. }
+	\begin{multline*}
+	DoSetDate(28th) 
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Was that low after exercise? }
+	\begin{multline*}
+	Answer(After(e.time, e_1.time)) \wedge Hypo(e) \wedge e_1.type == Exercise  \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{()} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Exercise \wedge e.time == \mbox{19:52pm} \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{S\theCS} \key{()}: \addtocounter{CS}{1}
+	\textcolor{blue}{ There's the exercise. }
+	\begin{multline*}
+	e == e(-1) \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ What did she do then? }
+	\begin{multline*}
+	Answer(e(-1).kind) \\
+	\end{multline*}
+	
+	 
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Did she take a bolus before then? }
+	\begin{multline*}
+	Answer(Any(e.type==Bolus \wedge Before(e.time, e(-1).time))) \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{()} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Bolus \wedge e.time == \mbox{18:39pm}  \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Now go to the 29th. }
+	\begin{multline*}
+	DoSetDate(29th) \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Click on that meal. }
+	\begin{multline*}
+	DoClick(e) \wedge e.type == Meal \\
+	\end{multline*}
+
+
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Go to the next day. }
+	\begin{multline*}
+	DoSetDate(CurrentDate + 1) \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Go to the 26th. }
+	\begin{multline*}
+	DoSetDate(26th) \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{()} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == BGL \wedge e.time == \mbox{14:04pm} \\
+	\end{multline*}
+	
+	\item
+	\textbf{Click\theCClick} \key{()} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Hypo \wedge e.time == \mbox{12:42pm} \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ What did she eat before her exercise? }
+	\begin{multline*}
+	 Answer(e.food) \wedge Before(e.time, e_1.time) \wedge e.type==Meal \wedge e_1.type==Exercise  \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ What did she bolus before her exercise? }
+	\begin{multline*}
+	 Answer(e.value) \wedge Before(e.time, e_1(-1).time) \wedge e.type==Bolus \\
+	\end{multline*}
+	
+%===
+
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Go to the 22nd. }
+	\begin{multline*}
+	DoSetDate(22nd) \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Let's just go to the 17th. }
+	\begin{multline*}
+	DoSetDate(17th) \\
+	\end{multline*}
+	
+
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ What did she eat for supper? }
+	\begin{multline*}
+	Answer(e.food) \wedge e.type == Meal \wedge e.time==Night()  \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{()} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Meal \wedge e.time == \mbox{16:28pm} \\
+	\end{multline*}
+	
+
+	\item
+	\textbf{Click\theCClick} \key{()} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == InfusionSet \wedge e.time == \mbox{15:06pm} \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{()} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == FingerSticks \wedge e.time == \mbox{05:45am} \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Did she eat anything for that low? }
+	\begin{multline*}
+	Answer(Any(e.type==Meal \wedge Around(e.time, e_1.time))) \\
+	\wedge Hypo(e_1) \wedge Around(e_1.time, e(-1).time) \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{()} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Meal \wedge e.time == \mbox{05:26am} \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{()} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Bolus \wedge e.time == \mbox{07:15am} \\
+	\end{multline*}
+	
+
+	
+	\item
+	\textbf{S\theCS} \key{()}: \addtocounter{CS}{1}
+	\textcolor{blue}{ Did you see the low in the mid-afternoon? }
+	\begin{multline*}
+	Hypo(e) \wedge e.time == MidAfternoon() \\
+	\end{multline*}
+	 
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Next day. }
+	\begin{multline*}
+	DoSetDate(CurrentDate + 1) \\
+	\end{multline*}
+	
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Put steps in. }
+	\begin{multline*}
+	DoToggle(On, StepsCount) \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Let's see if she walked Sunday.  }
+	\begin{multline*}
+	Answer(Any(e.kind==Walk \wedge e.time==Interval(Sunday))) \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Go to the 24th. }
+	\begin{multline*}
+	DoSetDate(24th) \\
+	\end{multline*}
+	 
+	
+	\item
+	\textbf{Click\theCClick} \key{()} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == BGL \wedge e.time == \mbox{07:12pm} \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Go back to Saturday. }
+	\begin{multline*}
+	DoSetDate(Saturday) \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{()} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == FingerSticks \wedge e.time == \mbox{06:23am} \\
+	\end{multline*}
+	
+
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Start at the 28th. }
+	\begin{multline*}
+	DoSetDate(28th) \\
+	\end{multline*}
+	
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Look at the 27th. }
+	\begin{multline*}
+	DoSetDate(27th) \\
+	\end{multline*}
+	
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Look at 28th. }
+	\begin{multline*}
+	DoSetDate(28th) \\
+	\end{multline*}
+	
+	
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Look at the exercise she used to bring that blood sugar down. }
+	\begin{multline*}
+	DoClick(e) \wedge Behavior(e_1.value, Down) \\
+	\wedge Around(e.time, e_1.time) \wedge e.type == Exercise \wedge e_1.type==BGL
+	\end{multline*}
+	
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{()} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == FingerSticks \wedge e.time == \mbox{05:15am} \\
+	\end{multline*}
+	
+
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Look at the bolus at 11pm. }
+	\begin{multline*}
+	DoClick(e) \wedge e.type == Bolus \wedge Around(e.time, 11pm) \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Look at the 31st. }
+	\begin{multline*}
+	DoSetDate(31st) \\
+	\end{multline*}
+	
+	\item
+	\textbf{S\theCS} \key{()}: \addtocounter{CS}{1}
+	\textcolor{blue}{ She boluses at night. }
+	\begin{multline*}
+	e.type==Bolus \wedge e.time==Night() \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Will you toggle the steps on? }
+	\begin{multline*}
+	DoToggle(On, StepCount) \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Look at the 1st. }
+	\begin{multline*}
+	DoSetDate(1st) \\
+	\end{multline*}
+	
+
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Did she change her infusion set? }
+	\begin{multline*}
+	Answer(Any(e.type==InfusionSet \wedge e.date==CurrentDate)) \\
+	\end{multline*}
+	
+	\item
+	\textbf{Click\theCClick} \key{()} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Bolus \wedge e.time == \mbox{20:23pm} \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ How much did she bolus? }
+	\begin{multline*}
+	Answer(e.value) \wedge e.type == Bolus \wedge e==e(-1) \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ go to the 1st. }
+	\begin{multline*}
+	DoSetDate(1st) \\
+	\end{multline*}
+	
+
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ go to the 3rd. }
+	\begin{multline*}
+	DoSetDate(3rd) \\
+	\end{multline*}
+	
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{()} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == FingerSticks \wedge e.time == \mbox{03:54am} \\
+	\end{multline*}
+	
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ How low did she go right there. }
+	\begin{multline*}
+	Answer(e.value) \wedge Lowest(e.value) \wedge Around(e.time, e(-1).time) \wedge e.type==BGL \\
+	\end{multline*}
+	
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{()} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Hypo \wedge e.time == \mbox{03:54am} \\
+	\end{multline*}
+	
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Click on the exercise. }
+	\begin{multline*}
+	DoClick(e) \wedge e.type == Exercise \\
+	\end{multline*}
+	
+%===
+
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Was he working on cars again? }
+	\begin{multline*}
+	 Answer(e.kind == Cars) \wedge e.type == Work  \\
+	\end{multline*}
+
+	
+	\item
+	\textbf{Click\theCClick} \key{()} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Exercise \wedge e.time == \mbox{17:02pm} \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ On Saturday was he working on cars too? }
+	\begin{multline*}
+	 Answer(e.kind == Cars) \wedge e.type == Work \wedge e.date==Saturday \\
+	\end{multline*}
+
+
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Just look at his meals for fun. }
+	\begin{multline*}
+	DoClick(e) \wedge e.type == Meal \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Look at the next day.}
+	\begin{multline*}
+	DoSetDate(CurrentDate + 1) \\
+	\end{multline*}
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ see if he went low. }
+	\begin{multline*}
+	 Answer(Any(e, Hypo(e)))  \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Let's just look at all of his meals for fun. }
+	\begin{multline*}
+	DoClick(e) \wedge e.type == Meal \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{()} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Meal \wedge e.time == \mbox{19:09pm} \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{()} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Meal \wedge e.time == \mbox{06:19am} \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Click\theCClick} \key{()} \addtocounter{CClick}{1}
+	\begin{multline*}
+	Click(e) \wedge e.type == Meal \wedge e.time == \mbox{12:18pm} \\
+	\end{multline*}
+	
+
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ How much did he bolus? }
+	\begin{multline*}
+	Answer(e.value) \wedge Around(e.time, e(-1).time) \wedge e.type == Bolus \\
+	\end{multline*}
+	
+	
+	\item
+	\textbf{Q\theCQ} \key{()}: \addtocounter{CQ}{1}
+	\textcolor{blue}{ Did he work on cars this day? }
+	\begin{multline*}
+	Answer(e.kind == Cars) \wedge e.type == Work \\
+	\end{multline*}
+	
+\end{itemize}
+
+
+\end{document}

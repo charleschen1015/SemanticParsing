@@ -1,0 +1,62 @@
+### Enter a type 'identifier' and its actual 'representation'. The interpreter will recursively replace
+### any occurrence of the 'identifier' with its 'representation' in a template.
+###
+
+
+### A few rules:
+### - Any non-empty line other than comments must contain a type.
+### - Do not use special symbols and names in identifiers. For a list of such symbols see README.
+### - In case of redefinition, the latest definition will be used.
+### - Each identifier should be on one line only.
+### - If one identifier is for the logical names of corresponding to another identifier, add a '_logic' suffix to it.
+###   Keep in mind that they must contain exactly the same number of options as each other.
+
+
+
+
+# any event that can have a value (i.e. can be compared against a number)
+[valued_event] = [BGL / blood glucose level / heart rate / skin temperature / skin conductance / sweat / step count / basal rate]
+[valued_event_logic] = [BGL / BGL / HeartRate / SkinTemperature / GSR / GSR / StepCount / BasalRate]
+
+
+# discrete events typically can be clicked on and can serve as a single point of reference in a sentence
+[discrete_event] = [fingerstick / bolus / hypo event / hypo action / miscellaneous event / meal / illness / exercise / sleep  / wakeup event / work / stressor]
+[discrete_event_logic] = [FingerSticks / Bolus / Hypo / HypoAction / Misc / Meal / Illnesses / Exercise / ReportedSleep / Wakeup / Work / Stressors]
+
+
+# any event that can be used as a time reference (e.g. before [activity_event])
+[activity_event] = [sleep / sleeping / waking up / bolusing / exercise / exercising / work / working]
+[activity_event_logic] = [ReportedSleep / ReportedSleep / WakeUp / Bolus / Exercise / Exercise / Work / Work]
+
+
+[any_event] = [valued_event / discrete_event]
+[any_event_logic] = [valued_event_logic / discrete_event_logic]
+
+
+[poss_pronoun] = [his / her / their]
+
+
+# orders that are not too complex, e.g. do not include fifth, eighth, etc.
+[mini_order] = [first / second / third / last / next to last]
+[mini_order_logic] = [1 / 2 / 3 / -1 / -2]
+
+
+# important points in a day
+[daily_points] = [dawn / dusk / midday / noon / mid afternoon / midnight]
+[daily_points_logic] = [Dawn / Dusk / MidDay / Noon / MidAfternoon / MidNight]
+
+# important points in a day
+[daily_intervals] = [morning / afternoon / evening / night]
+[daily_intervals_logic] = [Morning / Afternoon / Evening / Night]
+
+
+# days of the week
+[week_days] = [Monday / Tuesday / Wednesday / Thursday / Friday / Saturday / Sunday]
+
+
+[month_names] = [January / February / March / April / May / June / July / August / September / October / November / December]
+[month_numbers] = [1 / 2 / 3 / 4 / 5 / 6 / 7 / 8 / 9 / 10 / 11 / 12]
+
+
+# qualifiers that adjust the level of something
+[qualifier] = [very / a little / slightly / extremely / noticeably / really / pretty]

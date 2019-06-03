@@ -1,0 +1,10 @@
+### Local existential questions about events. Local means limited to a specific time.
+### See README for guidelines.
+
+KEY: 11101
+
+
+
+(medium) "see if [she/he] went low."
+     --> Answer(Any(e, Hypo(e)))
+

@@ -1,0 +1,10 @@
+### GUI action commands.
+### See README for guidelines.
+
+KEY: 10
+
+
+   
+   
+(medium) "let's just look at all of [his/her] meals for fun"
+     --> DoClick(e) \wedge e.type == Meal 

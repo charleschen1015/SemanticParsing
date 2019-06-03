@@ -1,0 +1,53 @@
+### Statements about events
+### See README for guidelines.
+
+KEY: 01
+
+
+(medium) "it looks like there's a hypo"
+   --> Hypo(e) 
+
+
+(medium) "it looks like she suspended her pump."
+   --> Suspended(e) \wedge Around(e.time, e(-1).time) 
+
+
+(medium) "she says she feels shakey"
+   --> 
+
+(medium) "what did she come down to?"
+   --> Answer(e.value) \wedge Lowest(e.value) \wedge e.type == BGL
+
+(medium) "what else did she say?"
+   --> Answer(e) \wedge e.type == Misc 
+
+(medium) "Does she usually just take sugar?"
+   --> Answer(Cond(e.type == HypoAction ==> e.food == sugar)) 
+
+
+(medium) "she must have been eating something."
+   --> e.type == meal \wedge Around(e.time, e(-1).time)
+
+(medium) "is she getting low after exercise?"
+   --> Answer(e) \wedge Low(e) \wedge After(e.time, e_1.time) \wedge e_1.type == Exercise
+
+(medium) "is she running a little high all day long then?"
+   --> Answer(Cond(e.type == BGL \wedge e.date == CurrentDate ==> High(e.value)))
+
+
+(medium) "it looks like she woke up in the night because she was feeling low."
+   --> e.type == Wakeup \wedge e.time == Night() \wedge Around(e.time, e_1.time) \wedge Low(e_1) 
+   
+   
+(medium) "what is the intensity of walking?"
+   --> Answer(e.intensity) \wedge e.type == Exercise \wedge e.kind == Walking
+   
+   
+(medium) "i'm just gon na go to the next day."
+   --> DoSetDate(CurrentDate + 1)
+   
+   
+(medium) "i wonder what kind of exercise she's doing this day."
+   --> Answer(e.kind) \wedge e.type == Exercise
+   
+   
