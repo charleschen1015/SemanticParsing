@@ -3,7 +3,7 @@
 This repository contains the datasets and code associated with the paper:
 
 Charles Chen, and Razvan Bunescu. **_Context-Dependent Semantic Parsing over Temporally Structured Data._**
-In NAACL 2019 (Oral Presentation) [[PDF](https://arxiv.org/abs/1905.00245)]
+In NAACL 2019 (Oral Presentation) [[Preprint](https://arxiv.org/abs/1905.00245)] [[CameraReady](https://www.aclweb.org/anthology/N19-1360)]
 
 
 
@@ -12,11 +12,13 @@ In NAACL 2019 (Oral Presentation) [[PDF](https://arxiv.org/abs/1905.00245)]
 If you use our code in your research, please use the following BibTeX entry:
 
 ```
-@inproceedings{chen2019context,
+@inproceedings{chen-bunescu-2019-context,
   title={Context-Dependent Semantic Parsing over Temporally Structured Data},
   author={Chen, Charles and Bunescu, Razvan},
   booktitle={Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long Papers)},
-  pages={1--11},
+  publisher = {Association for Computational Linguistics},
+  url = {https://www.aclweb.org/anthology/N19-1360},
+  pages={3576--3585},
   year={2019}
 }
 ```
